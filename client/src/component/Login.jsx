@@ -1,51 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState , useContext } from 'react';
 import axios from 'axios';
-import './component.css'
+import './component.css';
+import AuthContext from './AuthProvider';
 
 export default function Login() {
+  const { setRole, setIsLoggedIn, setToken } = useContext(AuthContext);
   const [gmail, setGmail] = useState('');
   const [password, setPassword] = useState('');
-  console.log('pass',password);
-
+  
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('check',gmail,password);
     try {
       const response = await axios.post('http://localhost:8080/api/v1/Login', {
         gmail,
         password,
       });
 
-      console.log(response.data);
-      alert('ban da dang nhap thanh cong')
+      const role1 = response.data.check1;
+      setToken(response.data.token)
+      setIsLoggedIn(true);
+      setRole(role1);
+      alert('Bạn đã đăng nhập thành công');
+      console.log(setIsLoggedIn,setRole);
     } catch (error) {
       console.error('Lỗi:', error);
-      alert('thong tin dang nhap sai')
+      alert('Thông tin đăng nhập sai');
     }
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <h2>Login</h2>
-        <input
-          placeholder='Email'
-          type="email"
-          onChange={(e) => setGmail(e.target.value)}
-        />
-       
-        <input
+    <form onSubmit={handleSubmit}>
+      <h2>Login</h2>
+      <input
+        placeholder='Email'
+        type="email"
+        onChange={(e) => setGmail(e.target.value)}
+      />
+      <input
         placeholder='Password'
-          type="text"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <a href="">Porgot password</a>
-        <button type="submit">Đăng nhập</button>
-        <p>Don't have an account?<a href="">Singup</a></p>
-        <p>Or</p>
-        <button className='withLogin'>Login with Facebook</button>
-        <button className='withLogin' id='withgoogle'>Login with Google</button>
-      </form>
-    </>
+        type="password" // Use type "password" for password input
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <a href="">Forgot password</a>
+      <button type="submit">Đăng nhập</button>
+      <p>Don't have an account?<a href="">Signup</a></p>
+      <p>Or</p>
+      <button className='withLogin'>Login with Facebook</button>
+      <button className='withLogin' id='withgoogle'>Login with Google</button>
+    </form>
   );
 }

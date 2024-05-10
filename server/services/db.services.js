@@ -10,9 +10,18 @@ async function getAll() {
         throw error
     }
 }
-
+async function deleteData(id) {
+    try {
+        const result = await db.query('DELETE FROM dangnhap1 WHERE id = ?', [id]);
+        return result;
+    } catch (error) {
+        console.error('Error deleting data from database:', error);
+        throw error;
+    }
+}
 
 
 module.exports = {
-    getAll
+    getAll,
+    deleteData
 }

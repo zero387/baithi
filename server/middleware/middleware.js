@@ -4,8 +4,12 @@ require('dotenv').config();
 
 const authMiddleware = async (req, res, next) => {
     try {
-      
-        const token = req.headers['authorization'].split(" ")[1];
+        const authorizationHeader = req.headers['authorization'];
+        if (!authorizationHeader) {
+            return res.status(401).json({ error: 'Authorization header missing' });
+        }
+
+        const token = authorizationHeader.split(" ")[1];
 
         const decoded = jwt.verify(token, process.env.JWT_KEY);
         const { gmail } = decoded;
@@ -26,3 +30,4 @@ const authMiddleware = async (req, res, next) => {
 };
 
 module.exports = authMiddleware;
+
